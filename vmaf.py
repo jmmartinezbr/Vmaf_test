@@ -2,13 +2,8 @@ import os
 import json
 
 #lista_de_videos = [['video.mp4','mezanino.mxf']]
-lista_de_videos = [['tk014214-v6-trecho-mxf-2023-04-04_17-08-47_h264_288_240000.mp4','TK014214_v6_trecho.mxf'],
-['tk014214-v6-trecho-mxf-2023-04-04_17-08-47_h264_360_374137.mp4','TK014214_v6_trecho.mxf'],
-['tk014214-v6-trecho-mxf-2023-04-04_17-08-47_h264_576_710860.mp4','TK014214_v6_trecho.mxf'],
-['tk014214-v6-trecho-mxf-2023-04-04_17-08-47_h264_1080_3905402.mp4','TK014214_v6_trecho.mxf'],
-['tk014214-v6-trecho-mxf-2023-04-04_17-08-47_h264_900_1350634.mp4','TK014214_v6_trecho.mxf'],
-['tk014214-v6-trecho-mxf-2023-04-04_17-08-47_h264_900_2566204.mp4','TK014214_v6_trecho.mxf'],
-['tk014214-v6-trecho-mxf-2023-04-04_17-08-47_h264_1080_5943474.mp4','TK014214_v6_trecho.mxf']]
+#insert video list in lista_de_videos
+lista_de_videos = []
 
 def ffprobe_json(video):
     comando = "ffprobe -v quiet -print_format json -show_format -show_streams {fname} > {fname}.json".format(fname=video)
