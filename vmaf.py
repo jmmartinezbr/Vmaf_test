@@ -3,30 +3,21 @@ import json
 
 #lista_de_videos = [['video.mp4','mezanino.mxf']]
 #insert video list in lista_de_videos
-lista_de_videos = []
+
+lista_de_videos = [["video.mp4","mezanine.mxf"]]
 
 def ffprobe_json(video):
     comando = "ffprobe -v quiet -print_format json -show_format -show_streams {fname} > {fname}.json".format(fname=video)
     os.system(comando)
     return
 
-def video_upscale(video,altura,largura,codec):
-    if altura==2160:
-        up="4k"
-    elif altura==1080:
-        up="hd"
-    comando = "ffmpeg -i {fname} -vf scale={vlargura}x{valtura} -c:v {codec_lib} {fname}_{valtura}.mp4".format(fname=video,vlargura=largura,valtura=altura,codec_lib=codec)
-    os.system(comando)
-    return
-
-def vmaf(video,mezanino,modelo):
-    comando = '''ffmpeg -i {videoin} -i {original} -lavfi libvmaf="model_path='C\:\\\\FFmpeg\\\\bin\\\\{model}':log_path=vmaf_{videoin}.json" -f null - '''.format(videoin=video,original=mezanino,model=modelo)
+def vmaf(video,mezanino,vlargura,valtura,modelo): #Function that aplies vmaf test autoscaling videos below mezanino's resolution
+    comando = '''ffmpeg -i {videoin} -i {original} -lavfi "[0:v]scale={vlargura}x{valtura}[main];[main][1:v]libvmaf=model='path={model}':log_path=vamf_{videoin}.json " -f null -'''.format(videoin=video,original=mezanino,model=modelo,vlargura=vlargura,valtura=valtura)
     os.system(comando)
     return
 
 def main(video,mezanino):
     model=""
-    codec_lib = ""
 
     ffprobe_json(video)
     ffprobe_json(mezanino)
@@ -47,24 +38,11 @@ def main(video,mezanino):
     parsed_json_video = json.loads(datav)
     video_width = parsed_json_video['streams'][0]['width']
     video_height = parsed_json_video['streams'][0]['height']
-    video_formato = parsed_json_video['streams'][0]['codec_name']
-    if video_formato == 'hevc':
-        codec_lib = "libx265"
-    elif video_formato == 'h264':
-        codec_lib = "libx264"
 
+    vmaf(video,mezanino,mezanino_width,mezanino_height,model)
 
-    if video_height == mezanino_height:
-       vmaf(video,mezanino,model)
-    else:
-       video_upscale(video,mezanino_height,mezanino_width,codec_lib)
-       vmaf(video+"_{h}.mp4".format(h=mezanino_height),mezanino,model)
     return
-
 
 
 for v in lista_de_videos:
     main(v[0],v[1])
-
-
-
